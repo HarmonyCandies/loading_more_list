@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "loading_more_list",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}
