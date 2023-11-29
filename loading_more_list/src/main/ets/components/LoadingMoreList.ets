@@ -1,10 +1,11 @@
 import { LoadingMoreBase, IndicatorStatus } from '../model/LoadingMoreBase';
+import { IndicatorWidget } from './IndicatorWidget';
 
 
 @Component
 export struct LoadingMoreList {
   @BuilderParam
-  private builder: (sourceList:LoadingMoreBase<any>) => void;
+  private builder: () => void;
   /// Whether reach the edge to load more items
   onReachEdge: () => boolean;
   /// Source list based on the [LoadingMoreBase].
@@ -15,12 +16,17 @@ export struct LoadingMoreList {
   /// to fallback to the default indicator.
   ///
   /// Defaults to [IndicatorWidget].
-  // @BuilderParam
-  // indicatorBuilder: (status: IndicatorStatus) => void;
+  @BuilderParam
+  indicatorBuilder?: (indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) => void = this.buildIndicator;
   /// Whether to auto refresh with the [sourceList].
   ///
   /// Set to false if you want to handle the refresh action yourself.
   autoRefresh: boolean = true;
+
+  @Builder
+  buildIndicator(indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) {
+    IndicatorWidget({ indicatorStatus: indicatorStatus, errorRefresh: errorRefresh, })
+  }
 
   aboutToAppear() {
     if (this.sourceList == undefined) {
@@ -33,21 +39,13 @@ export struct LoadingMoreList {
   }
 
   build() {
-    Column() {
-      Column() {
-        if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenBusying || this.sourceList.indicatorStatus == IndicatorStatus.empty)
-        // this.indicatorBuilder(this.indicatorStatus)
-          Text('loading....')
-        else
-          this.builder(this.sourceList)
-        if (this.sourceList.indicatorStatus == IndicatorStatus.loadingMoreBusying || this.sourceList.indicatorStatus == IndicatorStatus.noMoreLoad || this.sourceList.indicatorStatus == IndicatorStatus.loadingMoreError)
-        // this.indicatorBuilder(this.indicatorStatus)
-          Text('加载更多....')
-      }
-    }.parallelGesture(PanGesture({
-      direction: PanDirection.Down
-    }).onActionUpdate((event?: GestureEvent) => {
-
-    }))
+    if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenBusying)
+      this.indicatorBuilder(IndicatorStatus.fullScreenBusying)
+    else if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenError)
+      this.indicatorBuilder(IndicatorStatus.fullScreenError, this.sourceList.errorRefresh)
+    else if (this.sourceList.indicatorStatus == IndicatorStatus.empty)
+      this.indicatorBuilder(IndicatorStatus.empty)
+    else
+      this.builder()
   }
 }

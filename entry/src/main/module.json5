@@ -8,6 +8,7 @@
       "phone",
       "tablet"
     ],
+
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",
@@ -30,7 +31,14 @@
               "action.system.home"
             ]
           }
-        ]
+        ],
+
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.INTERNET",
+
       }
     ]
   }

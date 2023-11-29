@@ -8,6 +8,18 @@ export enum IndicatorStatus {
   empty
 }
 
+export class LoadingMoreItem {
+}
+
+export class LoadingMoreBusyingItem extends LoadingMoreItem {
+}
+
+export class LoadingMoreErrorItem extends LoadingMoreItem {
+}
+
+export class NoMoreLoadItem extends LoadingMoreItem {
+}
+
 export class DataSourceBase<T> extends Array<T> implements IDataSource {
   // IDataSource start
   private listeners: DataChangeListener[] = [];
@@ -68,13 +80,54 @@ export class DataSourceBase<T> extends Array<T> implements IDataSource {
       listener.onDataMove(from, to);
     })
   }
+
+  addAll(list: Array<T>): void {
+    var length = this.length;
+    if (length != 0) {
+      this.notifyDataDelete(length);
+    }
+
+    this.push(...list);
+    for (let index = length; index < this.length; index++) {
+      this.notifyDataAdd(index);
+    }
+
+  }
 }
 
 ///
-export abstract class LoadingMoreBase<T> extends DataSourceBase<T> {
+export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreItem> {
   protected abstract hasMore: boolean;
   private isLoading: boolean = false;
   indicatorStatus: IndicatorStatus = IndicatorStatus.none;
+
+  totalCount(): number {
+    // let lastCount = 0;
+    // if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying || this.indicatorStatus == IndicatorStatus.loadingMoreError || this.indicatorStatus == IndicatorStatus.noMoreLoad) {
+    //   lastCount = 1;
+    // }
+    // lastCount = 1;
+    return this.length + 1;
+  }
+
+  getData(index: number): T | LoadingMoreItem {
+    if (0 <= index && index < this.length)
+      return this[index];
+    if (!this.hasMore) {
+      return new NoMoreLoadItem();
+    }
+    else if (this.indicatorStatus == IndicatorStatus.loadingMoreError) {
+      return new LoadingMoreErrorItem();
+    }
+    else {
+      // grid
+      if (this.indicatorStatus != IndicatorStatus.loadingMoreBusying) {
+        this.loadMore();
+      }
+      return new LoadingMoreBusyingItem();
+    }
+
+  }
 
   public abstract loadData(isLoadMoreAction: boolean): Promise<boolean>;
 
@@ -84,6 +137,7 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T> {
     this.indicatorStatus = IndicatorStatus.loadingMoreBusying;
     if (preStatus != this.indicatorStatus) {
       // _onStateChanged(this);
+      this.notifyDataDelete(this.length);
     }
     return await this.innerLoadData(true);
   }
@@ -97,16 +151,23 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T> {
     let isSuccess = await this.loadData(isLoadMoreAction);
     this.isLoading = false;
     if (isSuccess) {
-      this.indicatorStatus = IndicatorStatus.none;
       if (this.length == 0) {
         this.indicatorStatus = IndicatorStatus.empty;
+      } else {
+        this.indicatorStatus = IndicatorStatus.none;
       }
     } else {
       if (this.indicatorStatus == IndicatorStatus.fullScreenBusying) {
         this.indicatorStatus = IndicatorStatus.fullScreenError;
       } else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying) {
         this.indicatorStatus = IndicatorStatus.loadingMoreError;
+        // refresh ui
+        this.notifyDataDelete(this.length);
       }
+    }
+    if (!this.hasMore) {
+      // refresh ui
+      this.notifyDataDelete(this.length);
     }
     // _onStateChanged(this);
     return isSuccess;
@@ -120,7 +181,35 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T> {
       this.indicatorStatus = IndicatorStatus.fullScreenBusying;
       //_onStateChanged(this);
     }
+    this.hasMore = true;
     return await this.innerLoadData(false);
+  }
+
+  public async errorRefresh(): Promise<boolean> {
+    if (this.isEmpty) {
+      return this.refresh(true);
+    }
+    return this.loadMore();
+  }
+
+  isLoadingMoreItem(item: any): boolean {
+    if (item instanceof LoadingMoreItem) {
+      return true;
+    }
+    return false;
+  }
+
+  getLoadingMoreItemStatus(item: any): IndicatorStatus {
+    if (item instanceof LoadingMoreBusyingItem) {
+      return IndicatorStatus.loadingMoreBusying;
+    }
+    else if (item instanceof LoadingMoreErrorItem) {
+      return IndicatorStatus.loadingMoreError;
+    }
+    else if (item instanceof NoMoreLoadItem) {
+      return IndicatorStatus.noMoreLoad;
+    }
+    return IndicatorStatus.none;
   }
 }
 

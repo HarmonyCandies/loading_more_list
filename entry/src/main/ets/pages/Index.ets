@@ -10,12 +10,21 @@ import window from '@ohos.window';
 @Entry
 @Component
 struct Index {
-  title: string = 'pull_to_refresh_notification demo';
+  title: string = 'loading_more_list demo';
   pages: Array<PageInfo> = [
     {
-      description: 'Show how to use pull to refresh notification to build a pull refresh header,and hide it on refresh done',
+      description: 'Show how to build loading more List quickly',
       route: 'pages/LoadingMoreListDemo',
     },
+    {
+      description: 'Show how to build loading more Grid quickly',
+      route: 'pages/LoadingMoreGridDemo',
+    },
+    {
+      description: 'Show how to build TuChongImageListDemo quickly',
+      route: 'pages/TuChongImageListDemo',
+    },
+
   ]
 
 
@@ -28,7 +37,7 @@ struct Index {
             Text(`${index + 1}. ${item.description}`).onClick((x) => {
               router.pushUrl({ url: item.route });
             })
-          }.width('100%')
+          }.width('100%').margin(10)
         })
       }.divider({ strokeWidth: 1, color: Color.Gray }).margin({ top: 10 })
     }
