@@ -22,7 +22,7 @@ struct Index {
     },
     {
       description: 'Show how to build TuChongImageListDemo quickly',
-      route: 'pages/TuChongImageListDemo',
+      route: 'pages/LoadingMoreWaterFlowDemo',
     },
 
   ]
@@ -34,10 +34,10 @@ struct Index {
       List() {
         ForEach(this.pages, (item, index) => {
           ListItem() {
-            Text(`${index + 1}. ${item.description}`).onClick((x) => {
+            Text(`${index + 1}. ${item.description}`).maxLines(5).onClick((x) => {
               router.pushUrl({ url: item.route });
-            })
-          }.width('100%').margin(10)
+            }).width('100%')
+          }.margin(10)
         })
       }.divider({ strokeWidth: 1, color: Color.Gray }).margin({ top: 10 })
     }

@@ -1,7 +1,7 @@
 import { LoadingMoreBase } from '@ohos/loading_more_list/src/main/ets/model/LoadingMoreBase';
 
 export class ListData extends LoadingMoreBase<number> {
-  protected hasMore: boolean = true;
+  hasMore: boolean = true;
   /// mock request success
   isSuccess: boolean = false;
   pageSize: number = 10;

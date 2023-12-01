@@ -16,7 +16,7 @@ struct LoadingMoreListDemo {
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
               errorRefresh: this.listData.errorRefresh
-            }).backgroundColor('#22808080')
+            })
           else
             Text(`${item}`,).align(Alignment.Center)
         }.height(100).width('100%')

@@ -3,7 +3,7 @@ import { FeedList, TuChongSource } from './TuChongSource';
 import http from '@ohos.net.http';
 
 export class TuChongRepository extends LoadingMoreBase<FeedList> {
-  protected hasMore: boolean = true;
+  public  hasMore: boolean = true;
   page: number = 1;
 
   public async refresh(notifyStateChanged: boolean = false): Promise<boolean> {
@@ -30,7 +30,7 @@ export class TuChongRepository extends LoadingMoreBase<FeedList> {
       return new Promise<boolean>((resolve) => {
         setTimeout(() => {
           this.addAll(feedList);
-          this.hasMore = !(feedList.length == 0 || this.length > 100);
+          this.hasMore = !(feedList.length == 0 || this.length > 20);
           this.page++;
           resolve(true);
         }, 2000);

@@ -80,26 +80,14 @@ export class DataSourceBase<T> extends Array<T> implements IDataSource {
       listener.onDataMove(from, to);
     })
   }
-
-  addAll(list: Array<T>): void {
-    var length = this.length;
-    if (length != 0) {
-      this.notifyDataDelete(length);
-    }
-
-    this.push(...list);
-    for (let index = length; index < this.length; index++) {
-      this.notifyDataAdd(index);
-    }
-
-  }
 }
 
 ///
 export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreItem> {
-  protected abstract hasMore: boolean;
+  public  abstract hasMore: boolean;
   private isLoading: boolean = false;
   indicatorStatus: IndicatorStatus = IndicatorStatus.none;
+  lastItemIsLoadingMoreItem: boolean = true;
 
   totalCount(): number {
     // let lastCount = 0;
@@ -107,7 +95,7 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreI
     //   lastCount = 1;
     // }
     // lastCount = 1;
-    return this.length + 1;
+    return this.length + (this.lastItemIsLoadingMoreItem ? 1 : 0);
   }
 
   getData(index: number): T | LoadingMoreItem {
@@ -162,12 +150,16 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreI
       } else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying) {
         this.indicatorStatus = IndicatorStatus.loadingMoreError;
         // refresh ui
-        this.notifyDataDelete(this.length);
+        if (this.lastItemIsLoadingMoreItem) {
+          this.notifyDataDelete(this.length);
+        }
       }
     }
     if (!this.hasMore) {
       // refresh ui
-      this.notifyDataDelete(this.length);
+      if (this.lastItemIsLoadingMoreItem) {
+        this.notifyDataDelete(this.length);
+      }
     }
     // _onStateChanged(this);
     return isSuccess;
@@ -210,6 +202,18 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreI
       return IndicatorStatus.noMoreLoad;
     }
     return IndicatorStatus.none;
+  }
+
+  addAll(list: Array<T>): void {
+    var length = this.length;
+    if (length != 0 && this.lastItemIsLoadingMoreItem) {
+      this.notifyDataDelete(length);
+    }
+
+    this.push(...list);
+    for (let index = length; index < this.length; index++) {
+      this.notifyDataAdd(index);
+    }
   }
 }
 

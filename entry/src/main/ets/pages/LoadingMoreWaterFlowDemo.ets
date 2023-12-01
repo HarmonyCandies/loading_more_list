@@ -1,25 +1,42 @@
-import { LoadingMoreList, IndicatorWidget } from '@ohos/loading_more_list'
+import { LoadingMoreList, IndicatorWidget, IndicatorStatus } from '@ohos/loading_more_list'
 import { TuChongRepository } from '../data/TuChongRepository';
 import { FeedList } from '../data/TuChongSource';
 
 @Entry
 @Component
-struct LoadingMoreListDemo {
+struct LoadingMoreWaterFlowDemo {
   @State listData: TuChongRepository = new TuChongRepository();
+
+  aboutToAppear() {
+    this.listData.lastItemIsLoadingMoreItem = false;
+  }
+
+  @Builder
+  buildFooter() {
+    if (!this.listData.hasMore)
+      IndicatorWidget({
+        indicatorStatus: IndicatorStatus.noMoreLoad,
+      })
+    else if (this.listData.indicatorStatus == IndicatorStatus.loadingMoreError)
+      IndicatorWidget({
+        indicatorStatus: IndicatorStatus.loadingMoreError,
+        errorRefresh: this.listData.errorRefresh
+      })
+    else
+      IndicatorWidget({
+        indicatorStatus: IndicatorStatus.loadingMoreBusying,
+      })
+  }
 
   @Builder
   buildList() {
-    List() {
+    WaterFlow({
+      footer: this.buildFooter.bind(this)
+    }) {
       LazyForEach(this.listData, (item, index) => {
-        ListItem() {
-          if (this.listData.isLoadingMoreItem(item))
-            IndicatorWidget({
-              indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-              errorRefresh: this.listData.errorRefresh
-            })
-          else
-            TuChongImageListItem({ item: item, index: index })
-        }.height(100).width('100%')
+        FlowItem() {
+          TuChongImageListItem({ item: item, index: index })
+        }
       },
         (item, index) => {
           var feedList = item as FeedList;
@@ -30,11 +47,12 @@ struct LoadingMoreListDemo {
         }
       )
     }
+    .columnsTemplate("1fr 1fr")
+    .columnsGap(10)
+    .rowsGap(5)
     .flexGrow(1)
-    //.height(500)
     .onReachEnd(() => {
       this.listData.loadMore();
-
     })
   }
 
@@ -45,7 +63,7 @@ struct LoadingMoreListDemo {
         builder: this.buildList.bind(this),
       })
     }
-    .title('LoadingMoreListDemo').titleMode(NavigationTitleMode.Mini)
+    .title('LoadingMoreWaterFlowDemo').titleMode(NavigationTitleMode.Mini)
   }
 }
 
@@ -100,9 +118,18 @@ struct TuChongImageListItem {
     // console.log(this.imageUrl);
   }
 
+  getAspectRatio(): number {
+    return this.item.images[0].width / this.item.images![0].height;
+  }
+
   build() {
     Column() {
-      Image(this.imageUrl()).objectFit(ImageFit.Cover).height(100).width('100%')
+      if (this.hasImage())
+        Image(this.imageUrl())
+          .objectFit(ImageFit.Fill)
+          .width('100%')
+          .aspectRatio(this.getAspectRatio())
+          .sourceSize({ width: this.item.images[0].width / 10, height: this.item.images[0].height / 10 })
       Divider()
     }
   }

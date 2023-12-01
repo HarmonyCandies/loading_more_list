@@ -2,7 +2,7 @@
   "src": [
     "pages/Index",
     "pages/LoadingMoreListDemo",
-    "pages/TuChongImageListDemo",
+    "pages/LoadingMoreWaterFlowDemo",
     "pages/LoadingMoreGridDemo"
   ]
 }

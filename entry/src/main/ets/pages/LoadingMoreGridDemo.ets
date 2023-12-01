@@ -22,7 +22,7 @@ struct LoadingMoreGridDemo {
             indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
             errorRefresh: this.listData.errorRefresh
           })
-        }.height(50).width('100%').backgroundColor('#22808080')
+        }
         // loading more item take one row, you can define it base on your case
         .columnStart(0).columnEnd(4)
         else

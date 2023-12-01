@@ -31,16 +31,25 @@ export struct IndicatorWidget {
     else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying)
     Row() {
       Text('Loading...',)
-      LoadingProgress().width(50).height(50).margin({ left: 10 })
-    }.justifyContent(FlexAlign.Center)
+      LoadingProgress().width(40).height(40).margin({ left: 10 })
+    }.justifyContent(FlexAlign.Center).width('100%').height(50).backgroundColor('#22808080')
     else if (this.indicatorStatus == IndicatorStatus.loadingMoreError)
-      Text('Loading failed! click to reload.',).onClick((event) => {
-        if (this.errorRefresh != null) {
-          this.errorRefresh();
-        }
-      })
+    Row() {
+      Text('Loading failed! click to reload.',)
+    }
+    .justifyContent(FlexAlign.Center)
+    .width('100%')
+    .height(50)
+    .backgroundColor('#22808080')
+    .onClick((event) => {
+      if (this.errorRefresh != null) {
+        this.errorRefresh();
+      }
+    })
     else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
+    Row() {
       Text('No more content!',)
+    }.justifyContent(FlexAlign.Center).width('100%').backgroundColor('#22808080').height(50)
     else
       Column()
   }
