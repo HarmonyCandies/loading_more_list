@@ -184,7 +184,6 @@ private builder: () => void;
 @BuilderParam
 indicatorBuilder?: (indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) => void = this.buildIndicator;
 ```
-因为 `BuilderParam` 的限制，在内部处理只处理了列表无数据之前的 `3` 种状态，而其他 `3` 种列表有数据状态，
 
 ## 例子
 
