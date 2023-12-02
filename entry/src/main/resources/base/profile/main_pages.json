@@ -3,6 +3,7 @@
     "pages/Index",
     "pages/LoadingMoreListDemo",
     "pages/LoadingMoreWaterFlowDemo",
-    "pages/LoadingMoreGridDemo"
+    "pages/LoadingMoreGridDemo",
+    "pages/LoadingMoreCustomIndicatorDemo"
   ]
 }

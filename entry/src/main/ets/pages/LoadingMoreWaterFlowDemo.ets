@@ -127,9 +127,11 @@ struct TuChongImageListItem {
       if (this.hasImage())
         Image(this.imageUrl())
           .objectFit(ImageFit.Fill)
+          .autoResize(true)
           .width('100%')
           .aspectRatio(this.getAspectRatio())
-          .sourceSize({ width: this.item.images[0].width / 10, height: this.item.images[0].height / 10 })
+          .backgroundColor('#22808080')
+      // .sourceSize({ width: this.item.images[0].width / 10, height: this.item.images[0].height / 10 })
       Divider()
     }
   }

@@ -1,4 +1,6 @@
-import { LoadingMoreBase } from '@ohos/loading_more_list/src/main/ets/model/LoadingMoreBase';
+import {
+  LoadingMoreBase,
+} from '@ohos/loading_more_list'
 import { FeedList, TuChongSource } from './TuChongSource';
 import http from '@ohos.net.http';
 
@@ -26,15 +28,20 @@ export class TuChongRepository extends LoadingMoreBase<FeedList> {
       let response: http.HttpResponse = await request.request(url);
 
       var feedList = (JSON.parse(response.result as string) as TuChongSource).feedList;
-      // see load more clearly
-      return new Promise<boolean>((resolve) => {
-        setTimeout(() => {
-          this.addAll(feedList);
-          this.hasMore = !(feedList.length == 0 || this.length > 20);
-          this.page++;
-          resolve(true);
-        }, 2000);
-      });
+
+      this.addAll(feedList);
+      this.hasMore = !(feedList.length == 0 || this.length > 50);
+      this.page++;
+      return true;
+      // test for loading more ui
+      // return new Promise<boolean>((resolve) => {
+      //   setTimeout(() => {
+      //     this.addAll(feedList);
+      //     this.hasMore = !(feedList.length == 0 || this.length > 20);
+      //     this.page++;
+      //     resolve(true);
+      //   }, 2000);
+      // });
     }
     catch (e) {
       return false;

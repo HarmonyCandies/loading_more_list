@@ -1,4 +1,6 @@
-import { LoadingMoreBase } from '@ohos/loading_more_list/src/main/ets/model/LoadingMoreBase';
+import {
+  LoadingMoreBase,
+} from '@ohos/loading_more_list'
 
 export class ListData extends LoadingMoreBase<number> {
   hasMore: boolean = true;

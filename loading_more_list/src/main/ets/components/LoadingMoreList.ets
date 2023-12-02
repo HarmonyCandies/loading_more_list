@@ -1,13 +1,12 @@
-import { LoadingMoreBase, IndicatorStatus } from '../model/LoadingMoreBase';
+import { LoadingMoreBase, IndicatorStatus } from '../viewmodel/LoadingMoreBase';
 import { IndicatorWidget } from './IndicatorWidget';
 
 
 @Component
 export struct LoadingMoreList {
+  /// The List/Grid/WaterFlow Component
   @BuilderParam
   private builder: () => void;
-  /// Whether reach the edge to load more items
-  onReachEdge: () => boolean;
   /// Source list based on the [LoadingMoreBase].
   @Link sourceList: LoadingMoreBase<any>;
   /// The builder for each [IndicatorStatus].
@@ -16,12 +15,9 @@ export struct LoadingMoreList {
   /// to fallback to the default indicator.
   ///
   /// Defaults to [IndicatorWidget].
+  /// Only for [IndicatorStatus.fullScreenBusying,IndicatorStatus.fullScreenError,IndicatorStatus.empty]
   @BuilderParam
   indicatorBuilder?: (indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) => void = this.buildIndicator;
-  /// Whether to auto refresh with the [sourceList].
-  ///
-  /// Set to false if you want to handle the refresh action yourself.
-  autoRefresh: boolean = true;
 
   @Builder
   buildIndicator(indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) {

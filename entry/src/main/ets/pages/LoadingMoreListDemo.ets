@@ -11,15 +11,15 @@ struct LoadingMoreListDemo {
     List() {
       LazyForEach(this.listData, (item, index) => {
         ListItem() {
-          // index > this.listData
+          // index > this.listData.length
           if (this.listData.isLoadingMoreItem(item))
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
               errorRefresh: this.listData.errorRefresh
             })
           else
-            Text(`${item}`,).align(Alignment.Center)
-        }.height(100).width('100%')
+            Text(`${item}`,).align(Alignment.Center).height(100)
+        }.width('100%')
       },
         (item, index) => {
 

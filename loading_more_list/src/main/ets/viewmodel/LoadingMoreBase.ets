@@ -82,7 +82,7 @@ export class DataSourceBase<T> extends Array<T> implements IDataSource {
   }
 }
 
-///
+/// loading more base class
 export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreItem> {
   public  abstract hasMore: boolean;
   private isLoading: boolean = false;
@@ -90,11 +90,6 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreI
   lastItemIsLoadingMoreItem: boolean = true;
 
   totalCount(): number {
-    // let lastCount = 0;
-    // if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying || this.indicatorStatus == IndicatorStatus.loadingMoreError || this.indicatorStatus == IndicatorStatus.noMoreLoad) {
-    //   lastCount = 1;
-    // }
-    // lastCount = 1;
     return this.length + (this.lastItemIsLoadingMoreItem ? 1 : 0);
   }
 
@@ -108,13 +103,12 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreI
       return new LoadingMoreErrorItem();
     }
     else {
-      // grid
+      // auto load more
       if (this.indicatorStatus != IndicatorStatus.loadingMoreBusying) {
         this.loadMore();
       }
       return new LoadingMoreBusyingItem();
     }
-
   }
 
   public abstract loadData(isLoadMoreAction: boolean): Promise<boolean>;

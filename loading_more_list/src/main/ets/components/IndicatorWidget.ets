@@ -1,4 +1,4 @@
-import { IndicatorStatus, LoadingMoreBase } from '../model/LoadingMoreBase';
+import { IndicatorStatus, LoadingMoreBase } from '../viewmodel/LoadingMoreBase';
 
 // namespace LoadingMoreList {
 @Component

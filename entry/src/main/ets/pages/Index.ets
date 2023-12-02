@@ -1,10 +1,7 @@
 
 
-import deviceInfo from '@ohos.deviceInfo'
-import display from '@ohos.display'
+
 import router from '@ohos.router'
-import common from '@ohos.app.ability.common';
-import window from '@ohos.window';
 
 
 @Entry
@@ -21,10 +18,13 @@ struct Index {
       route: 'pages/LoadingMoreGridDemo',
     },
     {
-      description: 'Show how to build TuChongImageListDemo quickly',
+      description: 'Show how to build loading more WaterFlow quickly',
       route: 'pages/LoadingMoreWaterFlowDemo',
     },
-
+    {
+      description: 'Show how to build loading more List with custom indicator quickly',
+      route: 'pages/LoadingMoreCustomIndicatorDemo',
+    },
   ]
 
 
