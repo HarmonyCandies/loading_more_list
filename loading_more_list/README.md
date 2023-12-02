@@ -2,13 +2,31 @@
 
 快速支持列表，表格，瀑布流增加更多的效果。
 
-| ![PullToRefreshHeader.gif](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/pull_to_refresh_notification/PullToRefreshHeader.gif)  |   ![PullToRefreshAppbar.gif](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/pull_to_refresh_notification/PullToRefreshAppbar.gif) |
+| ![LoadingMoreList](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/loading_more_list/LoadingMoreList.gif)  |   ![LoadingMoreGrid](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/loading_more_list/LoadingMoreGrid.gif) |
 | --- | --- |
+| ![LoadingMoreWaterFlow](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/loading_more_list/LoadingMoreWaterFlow.gif)  |   ![LoadingMoreCustomIndicator](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/loading_more_list/LoadingMoreCustomIndicator.gif) |
+
+- [loading\_more\_list](#loading_more_list)
+  - [安装](#安装)
+  - [列表状态](#列表状态)
+    - [IndicatorStatus](#indicatorstatus)
+  - [准备数据源](#准备数据源)
+    - [LoadingMoreBase](#loadingmorebase)
+  - [使用](#使用)
+    - [导入引用](#导入引用)
+    - [LoadingMoreList](#loadingmorelist)
+  - [例子](#例子)
+    - [列表(List)](#列表list)
+    - [表格(Grid)](#表格grid)
+    - [瀑布流(WaterFlow)](#瀑布流waterflow)
+    - [自定状态组件](#自定状态组件)
+
 
 
 ## 安装
 
 `ohpm install @ohos/loading_more_list`
+
 
 
 ## 列表状态
@@ -233,7 +251,7 @@ struct LoadingMoreListDemo {
     List() {
       LazyForEach(this.listData, (item, index) => {
         ListItem() {
-          // index > this.listData.length
+          // index == this.listData.length
           if (this.listData.isLoadingMoreItem(item))
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
@@ -289,7 +307,7 @@ struct LoadingMoreGridDemo {
   buildList() {
     Grid() {
       LazyForEach(this.listData, (item, index) => {
-        // index > this.listData.length
+        // index == this.listData.length
         if (this.listData.isLoadingMoreItem(item))
         GridItem() {
           IndicatorWidget({
@@ -328,7 +346,7 @@ struct LoadingMoreGridDemo {
         builder: this.buildList.bind(this),
       })
     }
-    .title('LoadingMoreListDemo').titleMode(NavigationTitleMode.Mini)
+    .title('LoadingMoreGridDemo').titleMode(NavigationTitleMode.Mini)
   }
 }
 ```
@@ -475,19 +493,19 @@ struct LoadingMoreCustomIndicatorDemo {
         }
       )
     }
-    .flexGrow(1)
-    .onReachEnd(() => {
-      this.listData.loadMore();
+.flexGrow(1)
+  .onReachEnd(() => {
+    this.listData.loadMore();
 
-    })
-  }
+  })
+}
 
-  @Builder
-  buildIndicator(indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) {
-    CustomIndicatorWidget({ indicatorStatus: indicatorStatus, errorRefresh: errorRefresh })
-  }
+@Builder
+buildIndicator(indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) {
+  CustomIndicatorWidget({ indicatorStatus: indicatorStatus, errorRefresh: errorRefresh })
+}
 
-  build() {
+build() {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
@@ -495,8 +513,8 @@ struct LoadingMoreCustomIndicatorDemo {
         indicatorBuilder: this.buildIndicator,
       })
     }
-    .title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)
-  }
+.title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)
+}
 }
 
 
@@ -514,43 +532,43 @@ export struct CustomIndicatorWidget {
       Text('正在加载...不要着急',)
       LoadingProgress().width(50).height(50).margin({ left: 10 })
     }.justifyContent(FlexAlign.Center).width('100%').height('100%')
-    else if (this.indicatorStatus == IndicatorStatus.fullScreenError)
-    Row() {
-      Text('好像出现了问题呢？点击重新刷新',)
-    }.justifyContent(FlexAlign.Center)
-    .width('100%').height('100%').onClick((event) => {
-      if (this.errorRefresh != null) {
-        this.errorRefresh();
-      }
-    })
-    else if (this.indicatorStatus == IndicatorStatus.empty)
-    Row() {
-      Text('这里只有空气呀！',)
-    }.justifyContent(FlexAlign.Center).width('100%').height('100%')
-    else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying)
-    Row() {
-      Text('正在加载...不要使劲拖了',)
-      LoadingProgress().width(40).height(40).margin({ left: 10 })
-    }.justifyContent(FlexAlign.Center).width('100%').height(50).backgroundColor('#22808080')
-    else if (this.indicatorStatus == IndicatorStatus.loadingMoreError)
-    Row() {
-      Text('网络有点不对劲？点击再次加载试试！',)
+else if (this.indicatorStatus == IndicatorStatus.fullScreenError)
+Row() {
+  Text('好像出现了问题呢？点击重新刷新',)
+}.justifyContent(FlexAlign.Center)
+  .width('100%').height('100%').onClick((event) => {
+    if (this.errorRefresh != null) {
+      this.errorRefresh();
     }
-    .justifyContent(FlexAlign.Center)
-    .width('100%')
-    .height(50)
-    .backgroundColor('#22808080')
-    .onClick((event) => {
-      if (this.errorRefresh != null) {
-        this.errorRefresh();
-      }
-    })
-    else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
-    Row() {
-      Text('已经到了我的下线，不要再拖了',)
-    }.justifyContent(FlexAlign.Center).width('100%').backgroundColor('#22808080').height(50)
-    else
-      Column()
-  }
+  })
+else if (this.indicatorStatus == IndicatorStatus.empty)
+Row() {
+  Text('这里只有空气呀！',)
+}.justifyContent(FlexAlign.Center).width('100%').height('100%')
+else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying)
+Row() {
+  Text('正在加载...不要使劲拖了',)
+  LoadingProgress().width(40).height(40).margin({ left: 10 })
+}.justifyContent(FlexAlign.Center).width('100%').height(50).backgroundColor('#22808080')
+else if (this.indicatorStatus == IndicatorStatus.loadingMoreError)
+Row() {
+  Text('网络有点不对劲？点击再次加载试试！',)
+}
+.justifyContent(FlexAlign.Center)
+  .width('100%')
+  .height(50)
+  .backgroundColor('#22808080')
+  .onClick((event) => {
+    if (this.errorRefresh != null) {
+      this.errorRefresh();
+    }
+  })
+else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
+Row() {
+  Text('已经到了我的下线，不要再拖了',)
+}.justifyContent(FlexAlign.Center).width('100%').backgroundColor('#22808080').height(50)
+else
+Column()
+}
 }
 ```

@@ -16,7 +16,7 @@ struct LoadingMoreCustomIndicatorDemo {
     List() {
       LazyForEach(this.listData, (item, index) => {
         ListItem() {
-          // index > this.listData.length
+          // index == this.listData.length
           if (this.listData.isLoadingMoreItem(item))
             CustomIndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
@@ -27,7 +27,7 @@ struct LoadingMoreCustomIndicatorDemo {
         }.width('100%')
       },
         (item, index) => {
-          return item
+          return `${item}`
         }
       )
     }

@@ -15,7 +15,7 @@ struct LoadingMoreGridDemo {
   buildList() {
     Grid() {
       LazyForEach(this.listData, (item, index) => {
-        // index > this.listData.length
+        // index == this.listData.length
         if (this.listData.isLoadingMoreItem(item))
         GridItem() {
           IndicatorWidget({
@@ -31,7 +31,7 @@ struct LoadingMoreGridDemo {
         }.height(100).width('100%')
       },
         (item, index) => {
-          return item
+          return `${item}`
         }
       )
     }
@@ -54,7 +54,7 @@ struct LoadingMoreGridDemo {
         builder: this.buildList.bind(this),
       })
     }
-    .title('LoadingMoreListDemo').titleMode(NavigationTitleMode.Mini)
+    .title('LoadingMoreGridDemo').titleMode(NavigationTitleMode.Mini)
   }
 }
 

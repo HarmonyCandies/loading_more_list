@@ -12,12 +12,21 @@ export class LoadingMoreItem {
 }
 
 export class LoadingMoreBusyingItem extends LoadingMoreItem {
+  toString(): string {
+    return 'LoadingMoreBusyingItem';
+  }
 }
 
 export class LoadingMoreErrorItem extends LoadingMoreItem {
+  toString(): string {
+    return 'LoadingMoreErrorItem';
+  }
 }
 
 export class NoMoreLoadItem extends LoadingMoreItem {
+  toString(): string {
+    return 'NoMoreLoadItem';
+  }
 }
 
 export class DataSourceBase<T> extends Array<T> implements IDataSource {

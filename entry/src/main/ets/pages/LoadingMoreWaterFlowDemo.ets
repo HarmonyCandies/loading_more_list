@@ -41,9 +41,9 @@ struct LoadingMoreWaterFlowDemo {
         (item, index) => {
           var feedList = item as FeedList;
           if ('post_id' in feedList) {
-            return feedList.post_id;
+            return `${feedList.post_id}`;
           }
-          return item
+          return `${item}`
         }
       )
     }

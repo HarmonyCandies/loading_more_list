@@ -1,4 +1,4 @@
-import { LoadingMoreList, LoadingMoreBase, IndicatorWidget } from '@ohos/loading_more_list'
+import { LoadingMoreList, IndicatorWidget } from '@ohos/loading_more_list'
 import { ListData } from '../data/ListData';
 
 @Entry
@@ -11,7 +11,7 @@ struct LoadingMoreListDemo {
     List() {
       LazyForEach(this.listData, (item, index) => {
         ListItem() {
-          // index > this.listData.length
+          // index == this.listData.length
           if (this.listData.isLoadingMoreItem(item))
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
@@ -22,8 +22,7 @@ struct LoadingMoreListDemo {
         }.width('100%')
       },
         (item, index) => {
-
-          return item
+          return `${item}`
         }
       )
     }
