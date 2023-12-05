@@ -25,7 +25,7 @@
 
 ## 安装
 
-`ohpm install @ohos/loading_more_list`
+`ohpm install @candies/loading_more_list`
 
 ## 列表状态
 
@@ -105,7 +105,7 @@ getData(index: number): T | LoadingMoreItem {
 ``` typescript
 import {
   LoadingMoreBase,
-} from '@ohos/loading_more_list'
+} from '@candies/loading_more_list'
 import { FeedList, TuChongSource } from './TuChongSource';
 import http from '@ohos.net.http';
 
@@ -165,7 +165,7 @@ import {
   LoadingMoreBase,
   IndicatorWidget,
   IndicatorStatus,
-} from '@ohos/loading_more_list'
+} from '@candies/loading_more_list'
 ```
 
 ### LoadingMoreList
@@ -190,7 +190,7 @@ indicatorBuilder?: (indicatorStatus: IndicatorStatus, errorRefresh?: () => Promi
 ``` typescript
 import {
   LoadingMoreBase,
-} from '@ohos/loading_more_list'
+} from '@candies/loading_more_list'
 
 export class ListData extends LoadingMoreBase<number> {
   hasMore: boolean = true;
@@ -236,7 +236,7 @@ export class ListData extends LoadingMoreBase<number> {
 完整代码如下：
 
 ```typescript
-import { LoadingMoreList, LoadingMoreBase, IndicatorWidget } from '@ohos/loading_more_list'
+import { LoadingMoreList, LoadingMoreBase, IndicatorWidget } from '@candies/loading_more_list'
 
 @Entry
 @Component
@@ -288,7 +288,7 @@ struct LoadingMoreListDemo {
 跟列表的类似，不过要注意最后一个元素构建有点区别。你需要为最后一个元素 `GridItem` 设置 `columnStart` 和 `columnEnd` 来实现元素跨列，让它占用整个一行(当然了，这个是通常的情况，你也可以根据你自身的情况设置)
 
 ```typescript
-import { LoadingMoreList, LoadingMoreBase, IndicatorWidget } from '@ohos/loading_more_list'
+import { LoadingMoreList, LoadingMoreBase, IndicatorWidget } from '@candies/loading_more_list'
 
 @Entry
 @Component
@@ -381,7 +381,7 @@ struct LoadingMoreGridDemo {
 完整代码如下:
 
  ```typescript
-import { LoadingMoreList, IndicatorWidget, IndicatorStatus } from '@ohos/loading_more_list'
+import { LoadingMoreList, IndicatorWidget, IndicatorStatus } from '@candies/loading_more_list'
 
 @Entry
 @Component
@@ -463,7 +463,7 @@ import {
   LoadingMoreBase,
   IndicatorWidget,
   IndicatorStatus,
-} from '@ohos/loading_more_list'
+} from '@candies/loading_more_list'
 
 @Entry
 @Component

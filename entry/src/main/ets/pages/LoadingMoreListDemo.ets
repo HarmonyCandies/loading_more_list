@@ -1,4 +1,4 @@
-import { LoadingMoreList, IndicatorWidget } from '@ohos/loading_more_list'
+import { LoadingMoreList, IndicatorWidget } from '@candies/loading_more_list'
 import { ListData } from '../data/ListData';
 
 @Entry

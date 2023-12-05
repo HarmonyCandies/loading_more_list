@@ -3,7 +3,7 @@ import {
   LoadingMoreBase,
   IndicatorWidget,
   IndicatorStatus,
-} from '@ohos/loading_more_list'
+} from '@candies/loading_more_list'
 import { ListData } from '../data/ListData';
 
 @Entry

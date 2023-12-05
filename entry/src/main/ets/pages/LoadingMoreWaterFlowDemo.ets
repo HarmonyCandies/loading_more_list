@@ -1,4 +1,4 @@
-import { LoadingMoreList, IndicatorWidget, IndicatorStatus } from '@ohos/loading_more_list'
+import { LoadingMoreList, IndicatorWidget, IndicatorStatus } from '@candies/loading_more_list'
 import { TuChongRepository } from '../data/TuChongRepository';
 import { FeedList } from '../data/TuChongSource';
 

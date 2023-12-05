@@ -1,6 +1,6 @@
 import {
   LoadingMoreBase,
-} from '@ohos/loading_more_list'
+} from '@candies/loading_more_list'
 import { FeedList, TuChongSource } from './TuChongSource';
 import http from '@ohos.net.http';
 

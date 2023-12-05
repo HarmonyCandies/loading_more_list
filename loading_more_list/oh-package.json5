@@ -9,7 +9,7 @@
     'waterFlow',
   ],
   "author": "zmtzawqlp",
-  "name": "loading_more_list",
+  "name": "@candies/loading_more_list",
   "description": "Harmony plugin for building a loading more list of List,Grid,WaterFlow.",
   "main": "index.ets",
   "repository": "https://github.com/HarmonyCandies/loading_more_list",
