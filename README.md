@@ -27,6 +27,8 @@
 
 `ohpm install @candies/loading_more_list`
 
+
+
 ## 列表状态
 
 ### IndicatorStatus
@@ -180,9 +182,12 @@ private builder: () => void;
 @Link sourceList: LoadingMoreBase<any>;
 /// 列表的状态创建器, 只针对 [IndicatorStatus.fullScreenBusying,IndicatorStatus.fullScreenError,IndicatorStatus.empty]
 @BuilderParam
-indicatorBuilder?: (indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) => void = this.buildIndicator;
+indicatorBuilder?: ($$: {
+  indicatorStatus: IndicatorStatus,
+  sourceList: LoadingMoreBase<any>,
+}) => void = this.buildIndicator;
 ```
- 
+
 ## 例子
 
 准备一个简单的数据源。
@@ -228,7 +233,7 @@ export class ListData extends LoadingMoreBase<number> {
           if (this.listData.isLoadingMoreItem(item))
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-              errorRefresh: this.listData.errorRefresh
+              sourceList: this.listData,
             })
 ```
 
@@ -252,7 +257,7 @@ struct LoadingMoreListDemo {
           if (this.listData.isLoadingMoreItem(item))
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-              errorRefresh: this.listData.errorRefresh
+              sourceList: this.listData,
             })
           else
             Text(`${item}`,).align(Alignment.Center).height(100)
@@ -309,7 +314,7 @@ struct LoadingMoreGridDemo {
         GridItem() {
           IndicatorWidget({
             indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-            errorRefresh: this.listData.errorRefresh
+            sourceList: this.listData,
           })
         }
         // loading more item take one row, you can define it base on your case
@@ -369,7 +374,7 @@ struct LoadingMoreGridDemo {
     else if (this.listData.indicatorStatus == IndicatorStatus.loadingMoreError)
       IndicatorWidget({
         indicatorStatus: IndicatorStatus.loadingMoreError,
-        errorRefresh: this.listData.errorRefresh
+        sourceList: this.listData,
       })
     else
       IndicatorWidget({
@@ -401,7 +406,7 @@ struct LoadingMoreWaterFlowDemo {
     else if (this.listData.indicatorStatus == IndicatorStatus.loadingMoreError)
       IndicatorWidget({
         indicatorStatus: IndicatorStatus.loadingMoreError,
-        errorRefresh: this.listData.errorRefresh
+        sourceList: this.listData,
       })
     else
       IndicatorWidget({
@@ -475,43 +480,46 @@ struct LoadingMoreCustomIndicatorDemo {
     List() {
       LazyForEach(this.listData, (item, index) => {
         ListItem() {
-          // index > this.listData.length
+          // index == this.listData.length
           if (this.listData.isLoadingMoreItem(item))
             CustomIndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-              errorRefresh: this.listData.errorRefresh
+              sourceList: this.listData,
             })
           else
             Text(`${item}`,).align(Alignment.Center).height(100)
         }.width('100%')
       },
         (item, index) => {
-          return item
+          return `${item}`
         }
       )
     }
-.flexGrow(1)
-  .onReachEnd(() => {
-    this.listData.loadMore();
+    .flexGrow(1)
+    .onReachEnd(() => {
+      this.listData.loadMore();
 
-  })
-}
+    })
+  }
 
-@Builder
-buildIndicator(indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) {
-  CustomIndicatorWidget({ indicatorStatus: indicatorStatus, errorRefresh: errorRefresh })
-}
+  @Builder
+  buildIndicator($$: {
+    indicatorStatus: IndicatorStatus,
+    sourceList: LoadingMoreBase<any>,
+  }) {
+    CustomIndicatorWidget({ indicatorStatus: $$.indicatorStatus, sourceList: $$.sourceList, })
+  }
 
-build() {
+  build() {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
         builder: this.buildList.bind(this),
-        indicatorBuilder: this.buildIndicator,
+        indicatorBuilder: this.buildIndicator.bind(this),
       })
     }
-.title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)
-}
+    .title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)
+  }
 }
 
 
@@ -519,7 +527,7 @@ build() {
 export struct CustomIndicatorWidget {
   /// Source list based on the [LoadingMoreBase].
   indicatorStatus: IndicatorStatus;
-  errorRefresh?: () => Promise<boolean> | null;
+  sourceList: LoadingMoreBase<any>;
 
   build() {
     if (this.indicatorStatus == IndicatorStatus.none)
@@ -529,43 +537,39 @@ export struct CustomIndicatorWidget {
       Text('正在加载...不要着急',)
       LoadingProgress().width(50).height(50).margin({ left: 10 })
     }.justifyContent(FlexAlign.Center).width('100%').height('100%')
-else if (this.indicatorStatus == IndicatorStatus.fullScreenError)
-Row() {
-  Text('好像出现了问题呢？点击重新刷新',)
-}.justifyContent(FlexAlign.Center)
-  .width('100%').height('100%').onClick((event) => {
-    if (this.errorRefresh != null) {
-      this.errorRefresh();
+    else if (this.indicatorStatus == IndicatorStatus.fullScreenError)
+    Row() {
+      Text('好像出现了问题呢？点击重新刷新',)
+    }.justifyContent(FlexAlign.Center)
+    .width('100%').height('100%').onClick((event) => {
+      this.sourceList.errorRefresh();
+    })
+    else if (this.indicatorStatus == IndicatorStatus.empty)
+    Row() {
+      Text('这里只有空气呀！',)
+    }.justifyContent(FlexAlign.Center).width('100%').height('100%')
+    else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying)
+    Row() {
+      Text('正在加载...不要使劲拖了',)
+      LoadingProgress().width(40).height(40).margin({ left: 10 })
+    }.justifyContent(FlexAlign.Center).width('100%').height(50).backgroundColor('#22808080')
+    else if (this.indicatorStatus == IndicatorStatus.loadingMoreError)
+    Row() {
+      Text('网络有点不对劲？点击再次加载试试！',)
     }
-  })
-else if (this.indicatorStatus == IndicatorStatus.empty)
-Row() {
-  Text('这里只有空气呀！',)
-}.justifyContent(FlexAlign.Center).width('100%').height('100%')
-else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying)
-Row() {
-  Text('正在加载...不要使劲拖了',)
-  LoadingProgress().width(40).height(40).margin({ left: 10 })
-}.justifyContent(FlexAlign.Center).width('100%').height(50).backgroundColor('#22808080')
-else if (this.indicatorStatus == IndicatorStatus.loadingMoreError)
-Row() {
-  Text('网络有点不对劲？点击再次加载试试！',)
-}
-.justifyContent(FlexAlign.Center)
-  .width('100%')
-  .height(50)
-  .backgroundColor('#22808080')
-  .onClick((event) => {
-    if (this.errorRefresh != null) {
-      this.errorRefresh();
-    }
-  })
-else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
-Row() {
-  Text('已经到了我的下线，不要再拖了',)
-}.justifyContent(FlexAlign.Center).width('100%').backgroundColor('#22808080').height(50)
-else
-Column()
-}
+    .justifyContent(FlexAlign.Center)
+    .width('100%')
+    .height(50)
+    .backgroundColor('#22808080')
+    .onClick((event) => {
+      this.sourceList.errorRefresh();
+    })
+    else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
+    Row() {
+      Text('已经到了我的下线，不要再拖了',)
+    }.justifyContent(FlexAlign.Center).width('100%').backgroundColor('#22808080').height(50)
+    else
+      Column()
+  }
 }
 ```

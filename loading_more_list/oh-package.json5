@@ -5,8 +5,8 @@
     "list",
     "loadMore",
     "more",
-    'grid',
-    'waterFlow',
+    "grid",
+    "waterFlow"
   ],
   "author": "zmtzawqlp",
   "name": "@candies/loading_more_list",

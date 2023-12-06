@@ -20,7 +20,7 @@ struct LoadingMoreGridDemo {
         GridItem() {
           IndicatorWidget({
             indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-            errorRefresh: this.listData.errorRefresh
+            sourceList: this.listData,
           })
         }
         // loading more item take one row, you can define it base on your case

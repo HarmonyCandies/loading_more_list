@@ -20,7 +20,7 @@ struct LoadingMoreCustomIndicatorDemo {
           if (this.listData.isLoadingMoreItem(item))
             CustomIndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-              errorRefresh: this.listData.errorRefresh
+              sourceList: this.listData,
             })
           else
             Text(`${item}`,).align(Alignment.Center).height(100)
@@ -39,8 +39,11 @@ struct LoadingMoreCustomIndicatorDemo {
   }
 
   @Builder
-  buildIndicator(indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) {
-    CustomIndicatorWidget({ indicatorStatus: indicatorStatus, errorRefresh: errorRefresh })
+  buildIndicator($$: {
+    indicatorStatus: IndicatorStatus,
+    sourceList: LoadingMoreBase<any>,
+  }) {
+    CustomIndicatorWidget({ indicatorStatus: $$.indicatorStatus, sourceList: $$.sourceList, })
   }
 
   build() {
@@ -48,7 +51,7 @@ struct LoadingMoreCustomIndicatorDemo {
       LoadingMoreList({
         sourceList: this.listData,
         builder: this.buildList.bind(this),
-        indicatorBuilder: this.buildIndicator,
+        indicatorBuilder: this.buildIndicator.bind(this),
       })
     }
     .title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)
@@ -60,7 +63,7 @@ struct LoadingMoreCustomIndicatorDemo {
 export struct CustomIndicatorWidget {
   /// Source list based on the [LoadingMoreBase].
   indicatorStatus: IndicatorStatus;
-  errorRefresh?: () => Promise<boolean> | null;
+  sourceList: LoadingMoreBase<any>;
 
   build() {
     if (this.indicatorStatus == IndicatorStatus.none)
@@ -75,9 +78,7 @@ export struct CustomIndicatorWidget {
       Text('好像出现了问题呢？点击重新刷新',)
     }.justifyContent(FlexAlign.Center)
     .width('100%').height('100%').onClick((event) => {
-      if (this.errorRefresh != null) {
-        this.errorRefresh();
-      }
+      this.sourceList.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.empty)
     Row() {
@@ -97,9 +98,7 @@ export struct CustomIndicatorWidget {
     .height(50)
     .backgroundColor('#22808080')
     .onClick((event) => {
-      if (this.errorRefresh != null) {
-        this.errorRefresh();
-      }
+      this.sourceList.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
     Row() {

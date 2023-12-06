@@ -17,11 +17,20 @@ export struct LoadingMoreList {
   /// Defaults to [IndicatorWidget].
   /// Only for [IndicatorStatus.fullScreenBusying,IndicatorStatus.fullScreenError,IndicatorStatus.empty]
   @BuilderParam
-  indicatorBuilder?: (indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) => void = this.buildIndicator;
+  indicatorBuilder?: ($$: {
+    indicatorStatus: IndicatorStatus,
+    sourceList: LoadingMoreBase<any>,
+  }) => void = this.buildIndicator;
 
   @Builder
-  buildIndicator(indicatorStatus: IndicatorStatus, errorRefresh?: () => Promise<boolean>) {
-    IndicatorWidget({ indicatorStatus: indicatorStatus, errorRefresh: errorRefresh, })
+  buildIndicator($$: {
+    indicatorStatus: IndicatorStatus,
+    sourceList: LoadingMoreBase<any>,
+  }) {
+    IndicatorWidget({
+      indicatorStatus: $$.indicatorStatus,
+      sourceList: $$.sourceList,
+    })
   }
 
   aboutToAppear() {
@@ -36,11 +45,20 @@ export struct LoadingMoreList {
 
   build() {
     if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenBusying)
-      this.indicatorBuilder(IndicatorStatus.fullScreenBusying)
+      this.indicatorBuilder({
+        indicatorStatus: this.sourceList.indicatorStatus,
+        sourceList: this.sourceList,
+      })
     else if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenError)
-      this.indicatorBuilder(IndicatorStatus.fullScreenError, this.sourceList.errorRefresh)
+      this.indicatorBuilder({
+        indicatorStatus: this.sourceList.indicatorStatus,
+        sourceList: this.sourceList,
+      })
     else if (this.sourceList.indicatorStatus == IndicatorStatus.empty)
-      this.indicatorBuilder(IndicatorStatus.empty)
+      this.indicatorBuilder({
+        indicatorStatus: this.sourceList.indicatorStatus,
+        sourceList: this.sourceList,
+      })
     else
       this.builder()
   }

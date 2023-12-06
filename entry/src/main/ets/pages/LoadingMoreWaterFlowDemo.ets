@@ -20,7 +20,7 @@ struct LoadingMoreWaterFlowDemo {
     else if (this.listData.indicatorStatus == IndicatorStatus.loadingMoreError)
       IndicatorWidget({
         indicatorStatus: IndicatorStatus.loadingMoreError,
-        errorRefresh: this.listData.errorRefresh
+        sourceList: this.listData,
       })
     else
       IndicatorWidget({

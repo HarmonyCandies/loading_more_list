@@ -5,7 +5,7 @@ import { IndicatorStatus, LoadingMoreBase } from '../viewmodel/LoadingMoreBase';
 export struct IndicatorWidget {
   /// Source list based on the [LoadingMoreBase].
   indicatorStatus: IndicatorStatus;
-  errorRefresh?: () => Promise<boolean> | null;
+  sourceList: LoadingMoreBase<any>;
 
   build() {
     if (this.indicatorStatus == IndicatorStatus.none)
@@ -20,9 +20,7 @@ export struct IndicatorWidget {
       Text('Loading failed! click to refresh',)
     }.justifyContent(FlexAlign.Center)
     .width('100%').height('100%').onClick((event) => {
-      if (this.errorRefresh != null) {
-        this.errorRefresh();
-      }
+      this.sourceList.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.empty)
     Row() {
@@ -42,9 +40,7 @@ export struct IndicatorWidget {
     .height(50)
     .backgroundColor('#22808080')
     .onClick((event) => {
-      if (this.errorRefresh != null) {
-        this.errorRefresh();
-      }
+      this.sourceList.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
     Row() {

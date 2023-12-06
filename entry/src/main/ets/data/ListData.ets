@@ -3,7 +3,7 @@ import { LoadingMoreBase, } from '@candies/loading_more_list'
 export class ListData extends LoadingMoreBase<number> {
   hasMore: boolean = true;
   /// mock request success
-  isSuccess: boolean = true;
+  isSuccess: boolean = false;
   pageSize: number = 10;
   maxCount: number = 20;
 
@@ -27,7 +27,7 @@ export class ListData extends LoadingMoreBase<number> {
           this.hasMore = false;
         }
         resolve(this.isSuccess);
-        // this.isSuccess = !this.isSuccess;
+         this.isSuccess = !this.isSuccess;
       }, 2000);
     });
   }

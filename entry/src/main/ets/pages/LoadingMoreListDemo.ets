@@ -15,7 +15,7 @@ struct LoadingMoreListDemo {
           if (this.listData.isLoadingMoreItem(item))
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
-              errorRefresh: this.listData.errorRefresh
+              sourceList: this.listData,
             })
           else
             Text(`${item}`,).align(Alignment.Center).height(100)
