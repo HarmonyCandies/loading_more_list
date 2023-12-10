@@ -7,6 +7,11 @@ export class ListData extends LoadingMoreBase<number> {
   pageSize: number = 10;
   maxCount: number = 20;
 
+  public async refresh(notifyStateChanged: boolean = false): Promise<boolean> {
+    this.hasMore = true;
+    return super.refresh(notifyStateChanged);
+  }
+
   async loadData(isLoadMoreAction: boolean): Promise<boolean> {
 
     return new Promise<boolean>((resolve) => {

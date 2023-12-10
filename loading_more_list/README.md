@@ -50,22 +50,22 @@ export enum IndicatorStatus {
 而它们又可以分成 `3` 种大的场景
 
 1. 初始的状态
-* none
+* `none`
 
 2. 列表第一次加载无数据之前下状态
-* fullScreenBusying
-* fullScreenError
-* empty
+* `fullScreenBusying`
+* `fullScreenError`
+* `empty`
 
 
 3. 列表有数据，在列表展示形式下的状态
-* loadingMoreBusying
-* loadingMoreError
-* noMoreLoad
+* `loadingMoreBusying`
+* `loadingMoreError`
+* `noMoreLoad`
 
 这 `3` 种的绘制是利用在数据源的最后手动添加一项来实现的。
 
-关键代码在 `LoadingMoreBase` 中的 `totalCount` 和 `getData` 的方法。
+关键代码是 `LoadingMoreBase` 中的 `totalCount` 和 `getData` 的方法。
 
 ```typescript
 lastItemIsLoadingMoreItem: boolean = true;
@@ -202,6 +202,11 @@ export class ListData extends LoadingMoreBase<number> {
   pageSize: number = 10;
   maxCount: number = 20;
 
+  public async refresh(notifyStateChanged: boolean = false): Promise<boolean> {
+    this.hasMore = true;
+    return super.refresh(notifyStateChanged);
+  }
+
   async loadData(isLoadMoreAction: boolean): Promise<boolean> {
     // 模拟请求延迟 1 秒
     return new Promise<boolean>((resolve) => {
@@ -264,7 +269,7 @@ struct LoadingMoreListDemo {
         }.width('100%')
       },
         (item, index) => {
-          return item
+          return `${item}`
         }
       )
     }
@@ -325,7 +330,7 @@ struct LoadingMoreGridDemo {
         }.height(100).width('100%')
       },
         (item, index) => {
-          return item
+          return `${item}`
         }
       )
     }
@@ -429,7 +434,7 @@ struct LoadingMoreWaterFlowDemo {
           if ('post_id' in feedList) {
             return feedList.post_id;
           }
-          return item
+          return `${item}`
         }
       )
     }
