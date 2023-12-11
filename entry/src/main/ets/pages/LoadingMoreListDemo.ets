@@ -37,7 +37,7 @@ struct LoadingMoreListDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
+        builder: () => this.buildList(),
       })
     }
     .title('LoadingMoreListDemo').titleMode(NavigationTitleMode.Mini)

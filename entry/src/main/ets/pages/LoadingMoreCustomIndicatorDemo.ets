@@ -1,9 +1,4 @@
-import {
-  LoadingMoreList,
-  LoadingMoreBase,
-  IndicatorWidget,
-  IndicatorStatus,
-} from '@candies/loading_more_list'
+import { LoadingMoreList, LoadingMoreBase, IndicatorStatus, IndicatorParam, } from '@candies/loading_more_list'
 import { ListData } from '../data/ListData';
 
 @Entry
@@ -39,10 +34,7 @@ struct LoadingMoreCustomIndicatorDemo {
   }
 
   @Builder
-  buildIndicator($$: {
-    indicatorStatus: IndicatorStatus,
-    sourceList: LoadingMoreBase<any>,
-  }) {
+  buildIndicator($$: IndicatorParam) {
     CustomIndicatorWidget({ indicatorStatus: $$.indicatorStatus, sourceList: $$.sourceList, })
   }
 
@@ -50,8 +42,10 @@ struct LoadingMoreCustomIndicatorDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
-        indicatorBuilder: this.buildIndicator.bind(this),
+        builder: () => this.buildList(),
+        indicatorBuilder: ($$: IndicatorParam) => this.buildIndicator(
+          { indicatorStatus: $$.indicatorStatus, sourceList: $$.sourceList, }
+        ),
       })
     }
     .title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)

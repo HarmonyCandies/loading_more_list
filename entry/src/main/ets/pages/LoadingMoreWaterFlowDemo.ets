@@ -31,7 +31,7 @@ struct LoadingMoreWaterFlowDemo {
   @Builder
   buildList() {
     WaterFlow({
-      footer: this.buildFooter.bind(this)
+      footer: () => this.buildFooter()
     }) {
       LazyForEach(this.listData, (item, index) => {
         FlowItem() {
@@ -60,7 +60,7 @@ struct LoadingMoreWaterFlowDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
+        builder: () => this.buildList(),
       })
     }
     .title('LoadingMoreWaterFlowDemo').titleMode(NavigationTitleMode.Mini)

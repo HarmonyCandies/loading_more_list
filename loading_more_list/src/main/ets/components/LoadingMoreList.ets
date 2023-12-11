@@ -17,16 +17,10 @@ export struct LoadingMoreList {
   /// Defaults to [IndicatorWidget].
   /// Only for [IndicatorStatus.fullScreenBusying,IndicatorStatus.fullScreenError,IndicatorStatus.empty]
   @BuilderParam
-  indicatorBuilder?: ($$: {
-    indicatorStatus: IndicatorStatus,
-    sourceList: LoadingMoreBase<any>,
-  }) => void = this.buildIndicator;
+  indicatorBuilder?: ($$: IndicatorParam) => void = this.buildIndicator;
 
   @Builder
-  buildIndicator($$: {
-    indicatorStatus: IndicatorStatus,
-    sourceList: LoadingMoreBase<any>,
-  }) {
+  buildIndicator($$: IndicatorParam) {
     IndicatorWidget({
       indicatorStatus: $$.indicatorStatus,
       sourceList: $$.sourceList,
@@ -62,4 +56,9 @@ export struct LoadingMoreList {
     else
       this.builder()
   }
+}
+
+export class IndicatorParam {
+  indicatorStatus: IndicatorStatus;
+  sourceList: LoadingMoreBase<any>;
 }

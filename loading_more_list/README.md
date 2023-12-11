@@ -1,6 +1,6 @@
 # loading_more_list
 
-快速支持列表，表格，瀑布流增加更多的效果。
+快速支持列表，表格，瀑布流上拉加载更多的效果。
 
 | ![LoadingMoreList](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/loading_more_list/LoadingMoreList.gif)  |   ![LoadingMoreGrid](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/loading_more_list/LoadingMoreGrid.gif) |
 | --- | --- |
@@ -182,10 +182,7 @@ private builder: () => void;
 @Link sourceList: LoadingMoreBase<any>;
 /// 列表的状态创建器, 只针对 [IndicatorStatus.fullScreenBusying,IndicatorStatus.fullScreenError,IndicatorStatus.empty]
 @BuilderParam
-indicatorBuilder?: ($$: {
-  indicatorStatus: IndicatorStatus,
-  sourceList: LoadingMoreBase<any>,
-}) => void = this.buildIndicator;
+indicatorBuilder?: ($$: IndicatorParam) => void = this.buildIndicator;
 ```
 
 ## 例子
@@ -246,7 +243,8 @@ export class ListData extends LoadingMoreBase<number> {
 完整代码如下：
 
 ```typescript
-import { LoadingMoreList, LoadingMoreBase, IndicatorWidget } from '@candies/loading_more_list'
+import { LoadingMoreList, IndicatorWidget } from '@candies/loading_more_list'
+import { ListData } from '../data/ListData';
 
 @Entry
 @Component
@@ -276,6 +274,7 @@ struct LoadingMoreListDemo {
     .flexGrow(1)
     .onReachEnd(() => {
       this.listData.loadMore();
+
     })
   }
 
@@ -283,12 +282,13 @@ struct LoadingMoreListDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
+        builder: () => this.buildList(),
       })
     }
     .title('LoadingMoreListDemo').titleMode(NavigationTitleMode.Mini)
   }
 }
+
 ```
 
 在 `List` 触发 `onReachEnd` 回调的时候，你可以手动调用 `loadMore` 方法。当然你也可以不手动调用，因为 `LoadingMoreBase` 已经自动调用过了。区别就是如果加载更多失败了，你加了这个手动调用的话，你可以通过上拉，再次触发加载更多。否则，只能依靠比如点击再次去调用 `loadMore`。
@@ -299,6 +299,7 @@ struct LoadingMoreListDemo {
 
 ```typescript
 import { LoadingMoreList, LoadingMoreBase, IndicatorWidget } from '@candies/loading_more_list'
+import { ListData } from '../data/ListData';
 
 @Entry
 @Component
@@ -350,7 +351,7 @@ struct LoadingMoreGridDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
+        builder: () => this.buildList(),
       })
     }
     .title('LoadingMoreGridDemo').titleMode(NavigationTitleMode.Mini)
@@ -392,6 +393,8 @@ struct LoadingMoreGridDemo {
 
  ```typescript
 import { LoadingMoreList, IndicatorWidget, IndicatorStatus } from '@candies/loading_more_list'
+import { TuChongRepository } from '../data/TuChongRepository';
+import { FeedList } from '../data/TuChongSource';
 
 @Entry
 @Component
@@ -422,7 +425,7 @@ struct LoadingMoreWaterFlowDemo {
   @Builder
   buildList() {
     WaterFlow({
-      footer: this.buildFooter.bind(this)
+      footer: () => this.buildFooter()
     }) {
       LazyForEach(this.listData, (item, index) => {
         FlowItem() {
@@ -432,7 +435,7 @@ struct LoadingMoreWaterFlowDemo {
         (item, index) => {
           var feedList = item as FeedList;
           if ('post_id' in feedList) {
-            return feedList.post_id;
+            return `${feedList.post_id}`;
           }
           return `${item}`
         }
@@ -451,10 +454,80 @@ struct LoadingMoreWaterFlowDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
+        builder: () => this.buildList(),
       })
     }
     .title('LoadingMoreWaterFlowDemo').titleMode(NavigationTitleMode.Mini)
+  }
+}
+
+
+@Component
+struct TuChongImageListItem {
+  item: FeedList;
+  index: number;
+
+  hasImage(): boolean {
+    return this.item.images.length != 0;
+  }
+
+  //   Size? imageRawSize;
+  //
+  //   Size get imageSize {
+  //   if (!hasImage) {
+  //   return const Size(0, 0);
+  // }
+  //   return Size(images![0].width!.toDouble(), images![0].height!.toDouble());
+  // }
+  //
+  imageUrl(): string {
+    if (!this.hasImage()) {
+      return '';
+    }
+
+    return `https://photo.tuchong.com/${this.item.images[0].user_id}/f/${this.item.images[0].img_id}.jpg`;
+  }
+
+  avatarUrl() {
+    return this.item.site.icon;
+  }
+
+  imageTitle() {
+    if (!this.hasImage()) {
+      return this.item.title;
+    }
+
+    return this.item.images[0].title;
+  }
+
+  imageDescription() {
+    if (!this.hasImage()) {
+      return this.item.content;
+    }
+
+    return this.item.images![0].description;
+  }
+
+  aboutToAppear() {
+    // console.log(this.imageUrl);
+  }
+
+  getAspectRatio(): number {
+    return this.item.images[0].width / this.item.images![0].height;
+  }
+
+  build() {
+    Column() {
+      if (this.hasImage())
+        Image(this.imageUrl())
+          .objectFit(ImageFit.Fill)
+          .autoResize(true)
+          .width('100%')
+          .aspectRatio(this.getAspectRatio())
+          .backgroundColor('#22808080')
+      // .sourceSize({ width: this.item.images[0].width / 10, height: this.item.images[0].height / 10 })
+      Divider()
+    }
   }
 }
 ```
@@ -468,12 +541,8 @@ struct LoadingMoreWaterFlowDemo {
 完整代码如下：
 
 ```typescript
-import {
-  LoadingMoreList,
-  LoadingMoreBase,
-  IndicatorWidget,
-  IndicatorStatus,
-} from '@candies/loading_more_list'
+import { LoadingMoreList, LoadingMoreBase, IndicatorStatus, IndicatorParam, } from '@candies/loading_more_list'
+import { ListData } from '../data/ListData';
 
 @Entry
 @Component
@@ -508,10 +577,7 @@ struct LoadingMoreCustomIndicatorDemo {
   }
 
   @Builder
-  buildIndicator($$: {
-    indicatorStatus: IndicatorStatus,
-    sourceList: LoadingMoreBase<any>,
-  }) {
+  buildIndicator($$: IndicatorParam) {
     CustomIndicatorWidget({ indicatorStatus: $$.indicatorStatus, sourceList: $$.sourceList, })
   }
 
@@ -519,8 +585,10 @@ struct LoadingMoreCustomIndicatorDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
-        indicatorBuilder: this.buildIndicator.bind(this),
+        builder: () => this.buildList(),
+        indicatorBuilder: ($$: IndicatorParam) => this.buildIndicator(
+          { indicatorStatus: $$.indicatorStatus, sourceList: $$.sourceList, }
+        ),
       })
     }
     .title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)

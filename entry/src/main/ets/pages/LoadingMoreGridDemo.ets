@@ -51,7 +51,7 @@ struct LoadingMoreGridDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: this.buildList.bind(this),
+        builder: () => this.buildList(),
       })
     }
     .title('LoadingMoreGridDemo').titleMode(NavigationTitleMode.Mini)
