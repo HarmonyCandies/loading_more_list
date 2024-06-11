@@ -8,7 +8,7 @@ export struct LoadingMoreList {
   @BuilderParam
   private builder: () => void;
   /// Source list based on the [LoadingMoreBase].
-  @Link sourceList: LoadingMoreBase<any>;
+  @Link sourceList: LoadingMoreBase<ESObject>;
   /// The builder for each [IndicatorStatus].
   ///
   /// You can handle cases that you need to customize, and return null result
@@ -17,7 +17,7 @@ export struct LoadingMoreList {
   /// Defaults to [IndicatorWidget].
   /// Only for [IndicatorStatus.fullScreenBusying,IndicatorStatus.fullScreenError,IndicatorStatus.empty]
   @BuilderParam
-  indicatorBuilder?: ($$: IndicatorParam) => void = this.buildIndicator;
+  indicatorBuilder: ($$: IndicatorParam) => void = this.buildIndicator;
 
   @Builder
   buildIndicator($$: IndicatorParam) {
@@ -38,27 +38,33 @@ export struct LoadingMoreList {
   }
 
   build() {
-    if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenBusying)
-      this.indicatorBuilder({
-        indicatorStatus: this.sourceList.indicatorStatus,
-        sourceList: this.sourceList,
-      })
-    else if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenError)
-      this.indicatorBuilder({
-        indicatorStatus: this.sourceList.indicatorStatus,
-        sourceList: this.sourceList,
-      })
-    else if (this.sourceList.indicatorStatus == IndicatorStatus.empty)
-      this.indicatorBuilder({
-        indicatorStatus: this.sourceList.indicatorStatus,
-        sourceList: this.sourceList,
-      })
-    else
+    if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenBusying) {
+      this.indicatorBuilder(
+        new IndicatorParam(this.sourceList.indicatorStatus,
+          this.sourceList,)
+      )
+    } else if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenError) {
+      this.indicatorBuilder(
+        new IndicatorParam(this.sourceList.indicatorStatus,
+          this.sourceList,)
+      )
+    } else if (this.sourceList.indicatorStatus == IndicatorStatus.empty) {
+      this.indicatorBuilder(
+        new IndicatorParam(this.sourceList.indicatorStatus,
+          this.sourceList,)
+      )
+    } else {
       this.builder()
+    }
   }
 }
 
 export class IndicatorParam {
+  constructor(indicatorStatus: IndicatorStatus, sourceList: LoadingMoreBase<ESObject>) {
+    this.indicatorStatus = indicatorStatus;
+    this.sourceList = sourceList;
+  }
+
   indicatorStatus: IndicatorStatus;
-  sourceList: LoadingMoreBase<any>;
+  sourceList: LoadingMoreBase<ESObject>;
 }

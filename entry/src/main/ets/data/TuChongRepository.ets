@@ -27,7 +27,7 @@ export class TuChongRepository extends LoadingMoreBase<FeedList> {
       let request = http.createHttp();
       let response: http.HttpResponse = await request.request(url);
 
-      var feedList = (JSON.parse(response.result as string) as TuChongSource).feedList;
+      let feedList = (JSON.parse(response.result as string) as TuChongSource).feedList;
 
       this.addAll(feedList);
       this.hasMore = !(feedList.length == 0 || this.length > 50);

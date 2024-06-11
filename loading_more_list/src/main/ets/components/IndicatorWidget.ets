@@ -4,13 +4,13 @@ import { IndicatorStatus, LoadingMoreBase } from '../viewmodel/LoadingMoreBase';
 @Component
 export struct IndicatorWidget {
   /// Source list based on the [LoadingMoreBase].
-  indicatorStatus: IndicatorStatus;
-  sourceList: LoadingMoreBase<any>;
+  indicatorStatus: IndicatorStatus = IndicatorStatus.none;
+  sourceList: LoadingMoreBase<ESObject> | null = null;
 
   build() {
-    if (this.indicatorStatus == IndicatorStatus.none)
+    if (this.indicatorStatus == IndicatorStatus.none) {
       Column()
-    else if (this.indicatorStatus == IndicatorStatus.fullScreenBusying)
+    } else if (this.indicatorStatus == IndicatorStatus.fullScreenBusying)
     Row() {
       Text('Loading...',)
       LoadingProgress().width(50).height(50).margin({ left: 10 })
@@ -20,7 +20,7 @@ export struct IndicatorWidget {
       Text('Loading failed! click to refresh',)
     }.justifyContent(FlexAlign.Center)
     .width('100%').height('100%').onClick((event) => {
-      this.sourceList.errorRefresh();
+      this.sourceList?.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.empty)
     Row() {
@@ -30,7 +30,11 @@ export struct IndicatorWidget {
     Row() {
       Text('Loading...',)
       LoadingProgress().width(40).height(40).margin({ left: 10 })
-    }.justifyContent(FlexAlign.Center).width('100%').height(50).backgroundColor('#22808080')
+    }
+    .justifyContent(FlexAlign.Center)
+    .width('100%')
+    .height(50)
+    .backgroundColor('#22808080')
     else if (this.indicatorStatus == IndicatorStatus.loadingMoreError)
     Row() {
       Text('Loading failed! click to reload.',)
@@ -40,14 +44,15 @@ export struct IndicatorWidget {
     .height(50)
     .backgroundColor('#22808080')
     .onClick((event) => {
-      this.sourceList.errorRefresh();
+      this.sourceList?.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
     Row() {
       Text('No more content!',)
     }.justifyContent(FlexAlign.Center).width('100%').backgroundColor('#22808080').height(50)
-    else
+    else {
       Column()
+    }
   }
 }
 

@@ -9,19 +9,20 @@ struct LoadingMoreListDemo {
   @Builder
   buildList() {
     List() {
-      LazyForEach(this.listData, (item, index) => {
+      LazyForEach(this.listData, (item: number, index) => {
         ListItem() {
           // index == this.listData.length
-          if (this.listData.isLoadingMoreItem(item))
+          if (this.listData.isLoadingMoreItem(item)) {
             IndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
               sourceList: this.listData,
             })
-          else
+          } else {
             Text(`${item}`,).align(Alignment.Center).height(100)
+          }
         }.width('100%')
       },
-        (item, index) => {
+        (item: number, index) => {
           return `${item}`
         }
       )
@@ -37,7 +38,7 @@ struct LoadingMoreListDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: () => this.buildList(),
+        builder: (): void => this.buildList(),
       })
     }
     .title('LoadingMoreListDemo').titleMode(NavigationTitleMode.Mini)

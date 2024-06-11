@@ -187,14 +187,14 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreI
     return this.loadMore();
   }
 
-  isLoadingMoreItem(item: any): boolean {
+  isLoadingMoreItem(item: ESObject): boolean {
     if (item instanceof LoadingMoreItem) {
       return true;
     }
     return false;
   }
 
-  getLoadingMoreItemStatus(item: any): IndicatorStatus {
+  getLoadingMoreItemStatus(item: ESObject): IndicatorStatus {
     if (item instanceof LoadingMoreBusyingItem) {
       return IndicatorStatus.loadingMoreBusying;
     }
@@ -208,7 +208,7 @@ export abstract class LoadingMoreBase<T> extends DataSourceBase<T | LoadingMoreI
   }
 
   addAll(list: Array<T>): void {
-    var length = this.length;
+    let length = this.length;
     if (length != 0 && this.lastItemIsLoadingMoreItem) {
       this.notifyDataDelete(length);
     }

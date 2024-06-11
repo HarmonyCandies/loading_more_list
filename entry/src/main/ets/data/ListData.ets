@@ -19,8 +19,8 @@ export class ListData extends LoadingMoreBase<number> {
         // this.hasMore=false;
         // resolve(true);
         // return;
-        var length = this.length;
-        let list = [];
+        let length = this.length;
+        let list = new Array<number>();
         if (this.isSuccess) {
           for (let index = length; index < length + this.pageSize; index++) {
             list.push(index);

@@ -34,12 +34,12 @@ export interface FeedList {
   title_image?: TitleImage
   tags: string[]
   event_tags: string[]
-  favorite_list_prefix: any[]
-  reward_list_prefix: any[]
-  comment_list_prefix: any[]
+  favorite_list_prefix: ESObject[]
+  reward_list_prefix: ESObject[]
+  comment_list_prefix: ESObject[]
   data_type: string
   created_at: string
-  sites: any[]
+  sites: ESObject[]
   site: Site
   recom_type: string
   rqt_id: string

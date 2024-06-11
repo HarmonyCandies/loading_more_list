@@ -13,7 +13,7 @@
   "description": "loading_more_list 是一款 ArkUI 插件，支持列表，表格，瀑布流等上拉加载更多效果。",
   "main": "Index.ets",
   "repository": "https://github.com/HarmonyCandies/loading_more_list",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/HarmonyCandies/loading_more_list",
   "dependencies": {}
 }

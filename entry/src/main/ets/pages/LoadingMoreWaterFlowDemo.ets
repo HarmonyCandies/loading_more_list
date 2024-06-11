@@ -13,19 +13,20 @@ struct LoadingMoreWaterFlowDemo {
 
   @Builder
   buildFooter() {
-    if (!this.listData.hasMore)
+    if (!this.listData.hasMore) {
       IndicatorWidget({
         indicatorStatus: IndicatorStatus.noMoreLoad,
       })
-    else if (this.listData.indicatorStatus == IndicatorStatus.loadingMoreError)
+    } else if (this.listData.indicatorStatus == IndicatorStatus.loadingMoreError) {
       IndicatorWidget({
         indicatorStatus: IndicatorStatus.loadingMoreError,
         sourceList: this.listData,
       })
-    else
+    } else {
       IndicatorWidget({
         indicatorStatus: IndicatorStatus.loadingMoreBusying,
       })
+    }
   }
 
   @Builder
@@ -33,17 +34,18 @@ struct LoadingMoreWaterFlowDemo {
     WaterFlow({
       footer: () => this.buildFooter()
     }) {
-      LazyForEach(this.listData, (item, index) => {
+      LazyForEach(this.listData, (item: FeedList, index) => {
         FlowItem() {
           TuChongImageListItem({ item: item, index: index })
         }
       },
-        (item, index) => {
-          var feedList = item as FeedList;
-          if ('post_id' in feedList) {
-            return `${feedList.post_id}`;
-          }
-          return `${item}`
+        (item: FeedList, index) => {
+          let feedList = item as FeedList;
+          return `${feedList.post_id}`;
+          // if ('post_id' in feedList) {
+          //   return `${feedList.post_id}`;
+          // }
+          // return `${item}`
         }
       )
     }
@@ -60,7 +62,7 @@ struct LoadingMoreWaterFlowDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: () => this.buildList(),
+        builder: (): void => this.buildList(),
       })
     }
     .title('LoadingMoreWaterFlowDemo').titleMode(NavigationTitleMode.Mini)
@@ -70,11 +72,11 @@ struct LoadingMoreWaterFlowDemo {
 
 @Component
 struct TuChongImageListItem {
-  item: FeedList;
-  index: number;
+  item: FeedList | null = null;
+  index: number = 0;
 
   hasImage(): boolean {
-    return this.item.images.length != 0;
+    return this.item!.images.length != 0;
   }
 
   //   Size? imageRawSize;
@@ -91,27 +93,27 @@ struct TuChongImageListItem {
       return '';
     }
 
-    return `https://photo.tuchong.com/${this.item.images[0].user_id}/f/${this.item.images[0].img_id}.jpg`;
+    return `https://photo.tuchong.com/${this.item!.images[0].user_id}/f/${this.item!.images[0].img_id}.jpg`;
   }
 
   avatarUrl() {
-    return this.item.site.icon;
+    return this.item!.site.icon;
   }
 
   imageTitle() {
     if (!this.hasImage()) {
-      return this.item.title;
+      return this.item!.title;
     }
 
-    return this.item.images[0].title;
+    return this.item!.images[0].title;
   }
 
   imageDescription() {
     if (!this.hasImage()) {
-      return this.item.content;
+      return this.item!.content;
     }
 
-    return this.item.images![0].description;
+    return this.item!.images![0].description;
   }
 
   aboutToAppear() {
@@ -119,18 +121,19 @@ struct TuChongImageListItem {
   }
 
   getAspectRatio(): number {
-    return this.item.images[0].width / this.item.images![0].height;
+    return this.item!.images[0].width / this.item!.images![0].height;
   }
 
   build() {
     Column() {
-      if (this.hasImage())
+      if (this.hasImage()) {
         Image(this.imageUrl())
           .objectFit(ImageFit.Fill)
           .autoResize(true)
           .width('100%')
           .aspectRatio(this.getAspectRatio())
           .backgroundColor('#22808080')
+      }
       // .sourceSize({ width: this.item.images[0].width / 10, height: this.item.images[0].height / 10 })
       Divider()
     }

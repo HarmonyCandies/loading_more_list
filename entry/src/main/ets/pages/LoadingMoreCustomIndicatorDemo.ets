@@ -9,19 +9,20 @@ struct LoadingMoreCustomIndicatorDemo {
   @Builder
   buildList() {
     List() {
-      LazyForEach(this.listData, (item, index) => {
+      LazyForEach(this.listData, (item: number, index) => {
         ListItem() {
           // index == this.listData.length
-          if (this.listData.isLoadingMoreItem(item))
+          if (this.listData.isLoadingMoreItem(item)) {
             CustomIndicatorWidget({
               indicatorStatus: this.listData.getLoadingMoreItemStatus(item),
               sourceList: this.listData,
             })
-          else
+          } else {
             Text(`${item}`,).align(Alignment.Center).height(100)
+          }
         }.width('100%')
       },
-        (item, index) => {
+        (item: number, index) => {
           return `${item}`
         }
       )
@@ -42,10 +43,8 @@ struct LoadingMoreCustomIndicatorDemo {
     Navigation() {
       LoadingMoreList({
         sourceList: this.listData,
-        builder: () => this.buildList(),
-        indicatorBuilder: ($$: IndicatorParam) => this.buildIndicator(
-          { indicatorStatus: $$.indicatorStatus, sourceList: $$.sourceList, }
-        ),
+        builder: (): void => this.buildList(),
+        indicatorBuilder: ($$: IndicatorParam): void => this.buildIndicator($$),
       })
     }
     .title('LoadingMoreCustomIndicatorDemo').titleMode(NavigationTitleMode.Mini)
@@ -56,33 +55,40 @@ struct LoadingMoreCustomIndicatorDemo {
 @Component
 export struct CustomIndicatorWidget {
   /// Source list based on the [LoadingMoreBase].
-  indicatorStatus: IndicatorStatus;
-  sourceList: LoadingMoreBase<any>;
+  indicatorStatus: IndicatorStatus = IndicatorStatus.none;
+  sourceList: LoadingMoreBase<ESObject> | null = null;
 
   build() {
-    if (this.indicatorStatus == IndicatorStatus.none)
+    if (this.indicatorStatus == IndicatorStatus.none) {
       Column()
+    }
     else if (this.indicatorStatus == IndicatorStatus.fullScreenBusying)
     Row() {
       Text('正在加载...不要着急',)
       LoadingProgress().width(50).height(50).margin({ left: 10 })
     }.justifyContent(FlexAlign.Center).width('100%').height('100%')
-    else if (this.indicatorStatus == IndicatorStatus.fullScreenError)
+    else if (this.indicatorStatus ==
+    IndicatorStatus.fullScreenError)
     Row() {
       Text('好像出现了问题呢？点击重新刷新',)
     }.justifyContent(FlexAlign.Center)
     .width('100%').height('100%').onClick((event) => {
-      this.sourceList.errorRefresh();
+      this.sourceList?.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.empty)
     Row() {
       Text('这里只有空气呀！',)
     }.justifyContent(FlexAlign.Center).width('100%').height('100%')
-    else if (this.indicatorStatus == IndicatorStatus.loadingMoreBusying)
+    else if (this.indicatorStatus ==
+    IndicatorStatus.loadingMoreBusying)
     Row() {
       Text('正在加载...不要使劲拖了',)
       LoadingProgress().width(40).height(40).margin({ left: 10 })
-    }.justifyContent(FlexAlign.Center).width('100%').height(50).backgroundColor('#22808080')
+    }
+    .justifyContent(FlexAlign.Center)
+    .width('100%')
+    .height(50)
+    .backgroundColor('#22808080')
     else if (this.indicatorStatus == IndicatorStatus.loadingMoreError)
     Row() {
       Text('网络有点不对劲？点击再次加载试试！',)
@@ -92,14 +98,15 @@ export struct CustomIndicatorWidget {
     .height(50)
     .backgroundColor('#22808080')
     .onClick((event) => {
-      this.sourceList.errorRefresh();
+      this.sourceList?.errorRefresh();
     })
     else if (this.indicatorStatus == IndicatorStatus.noMoreLoad)
     Row() {
       Text('已经到了我的下线，不要再拖了',)
     }.justifyContent(FlexAlign.Center).width('100%').backgroundColor('#22808080').height(50)
-    else
+    else {
       Column()
+    }
   }
 }
 
