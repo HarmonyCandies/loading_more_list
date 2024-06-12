@@ -39,32 +39,27 @@ export struct LoadingMoreList {
 
   build() {
     if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenBusying) {
-      this.indicatorBuilder(
-        new IndicatorParam(this.sourceList.indicatorStatus,
-          this.sourceList,)
-      )
+      this.indicatorBuilder({
+        indicatorStatus: this.sourceList.indicatorStatus,
+        sourceList: this.sourceList,
+      })
     } else if (this.sourceList.indicatorStatus == IndicatorStatus.fullScreenError) {
-      this.indicatorBuilder(
-        new IndicatorParam(this.sourceList.indicatorStatus,
-          this.sourceList,)
-      )
+      this.indicatorBuilder({
+        indicatorStatus: this.sourceList.indicatorStatus,
+        sourceList: this.sourceList,
+      })
     } else if (this.sourceList.indicatorStatus == IndicatorStatus.empty) {
-      this.indicatorBuilder(
-        new IndicatorParam(this.sourceList.indicatorStatus,
-          this.sourceList,)
-      )
+      this.indicatorBuilder({
+        indicatorStatus: this.sourceList.indicatorStatus,
+        sourceList: this.sourceList,
+      })
     } else {
       this.builder()
     }
   }
 }
 
-export class IndicatorParam {
-  constructor(indicatorStatus: IndicatorStatus, sourceList: LoadingMoreBase<ESObject>) {
-    this.indicatorStatus = indicatorStatus;
-    this.sourceList = sourceList;
-  }
-
+export interface IndicatorParam {
   indicatorStatus: IndicatorStatus;
   sourceList: LoadingMoreBase<ESObject>;
 }
